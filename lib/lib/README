@@ -1,0 +1,20 @@
+to compile, JGraphpad requires the following libraries:
+1) mandatory: JGraph from http://www.jgraph.com
+The rules is that you should put here the JGraph version that has got the nearest inferior version (or tag) of JGraphpad.
+2) mandatory: JNLP.jar - http://java.sun.com/products/javawebstart/download-jnlp.html
+Actually we only need it to compile, it's not included in the deployed jars. If you don't plan to use the webstart API (to save files to the local disk for instance),
+then you could drop that library along with the Micoplatform webstart support package.
+2) optionnal: EPS export requires epsgraphics.jar from http://www.jibble.org/epsgraphics/
+3) optionnal: PDF export requires itext from http://www.lowagie.com/iText/download.html
+4) optionnal: SVG export requires Apache Batik from: http://xmlgraphics.apache.org/batik/
+(also, because of a GPL/Apache license clash, you can't distribute along JGraphpadCE with Batik; Batik should be an optionnal plugin only. Also, for the
+SVG export to work, you should uncomment the FileExortSVG class!)
+
+Aditionnaly, we provide
+* a simple javascript helper to deploy JGraphpad as an applet
+* Pack200  to speed up the download time (only used by the build file).
+* an apache map file to deploy using Pack200 or standard jars transparently 
+(see http://sixlegs.com/blog/java/pack200-apache.html 
+if you are using an other server than Apache, then you would need to update the way you serve the jars or the pack200 packed archives)
+* a MoinMoin macro allowing to embed JGraphpad inside the MoinMoin wiki. Take your inspiration from that if you want to use MoinMoin along
+with PHP, Java, Python instead...

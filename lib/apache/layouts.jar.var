@@ -1,0 +1,6 @@
+URI: packed/layouts.jar.pack.gz
+Content-Type: x-java-archive
+Content-Encoding: pack200-gzip
+
+URI: unpacked/layouts.jar
+Content-Type: x-java-archive

@@ -1,0 +1,36 @@
+Developers TODO list:
+=====================
+
+- Background and graph cell images should be included in the zipped XML archives.
+- We should try to see if we can totally prevent the XMLEncoder from looking up bean infos
+on the applet codebase
+- We should gzip the files uploaded to the server
+- When used with MoinMoin wiki, we could restore the map upload. The map file seems OK,
+may be that's MoinMoin that doesn't handle it properly, not sure.
+- Because og java #4741757 bug, we need to work arround every DefaultPersistenceDelegate
+in order it load/save when used in unsigned environment. Things like Gradient are missing
+- Swing-Layout Adapter (javax.swing.SpringLayout)
+- Port-dialog or -tool for port manipulation
+- Move library-entry up/down
+- Animated Zoom (see the JUNG graph framework demos, they have a nice working example with this)
+- Touch Layout cell-size repulsion
+- Mouse Zoom
+- Library: edge Source/Target delete if unselected
+- New Ruler (see ASSAVID)
+- Distribute functions with icons
+- Vertical alignment icon
+
+Known Bugs
+----------
+
+- Uploading files to the server in applet context is really slow due to bean info lookup on the codebase.
+- When (used in applet or web start mode) and usigned, some graph data might not been saved because of java bug #4741757. Gradient color aren't encoded for instance. Workarround: don't use them, writte correct DefaultPersistenceDelegate for them or sign your applet.
+- When used in unsigned webstart mode you can save to the local disk but the
+user interface of the FileChooser is a bit buggy.
+- When loading a file from the Internet, the file name isn't updated in the frame.
+- No Live-Preview in Drag Enabled mode on Java 1.4 (JVM Bug!)
+	To reproduce this bug, go to the Graph menu and toggle Drag Enabled to true.
+	Then drag a selection. Note: No live preview is displayed during drags.
+	Compare this to Java 1.3 where the live preview was displayed properly.
+- Shift-Vertex-Move does not work in Drag Enabled mode (Shift-Edge-Move does)
+- Ctrl-release during move operation applies change on Windows

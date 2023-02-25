@@ -1,0 +1,463 @@
+JGraphpad 5.10.0.2
+-------------------
+
+* Isolation of the plugin packages and the lazily downloaded actions
+* Code clean up, refactoring
+* Pretty good online integration, especially with the MoinMoin wiki as an example
+
+
+
+JGraphpad 5.9.2.0.0
+-------------------
+
+Again a new refactored version to deserve one two purposes: online deployement and modularity
+
+* Now we have a SVN repository there http://sourceforge.net/svn/?group_id=43118  (the CVS repository is deprecated)
+* Isolation of the Microplatform package
+* Most of the action are now loaded only when triggered; that speed up dramatically the startup!
+* Removal of the PositionManager (not useful once since we do not admit anymore the previous preference system that breaks the security sandbox, it was only slowing the startup...)
+* New ant build file enforcing the indepence of the package that are design to be independent
+* the new ant buildfile also put each plugin inside its own jar package 
+
+
+
+JGraphpad 5.8.1.1
+-------------------
+
+This is mainly a bug fix realease.
+
+Dozens of bug due to the recent rafactoring and older have been fixed, among them
+* save/open with XMLEncoder
+* fix the document names
+* fix the frame sizes
+* fix the combo boxes
+* don't break the security sandbox anymore in various situations
+* properly instanciate and save custom JGraph subclassers defined in the properties files
+* fix the slow class loading under applet context
+* fix the upload to server feature
+* fix the unification of the parameters for webstart/application and applet
+
+Also, some refactoring has been done:
+* the plugin architecture now scales better. There is a simulator called VisualModeller built on the top of JGraphpad Community Edition and the first previews make us believe the plugin system is
+finally stable and powerfull.
+* Now works along with the MoinMoin wiki (version 1.5.3, see AttachFile.py): by writting
+drawing:mydiagram in a MoinMoin page you will produce an inetractive diagram everybody can edit. Of course this is becomming even more interresting with specific JGraphpad based application that can inherit this behavior! Also please notice that while uploaded file have a .draw extension, they are in fact .xml.gz files (zipped XML javabean), just like regular files or libraries.
+
+
+
+JGraphpad 5.8.0
+-------------------
+
+This is a major refactoring version! The API has been largely broken with the hope the new
+package structure is much more extensible and clean. Spagethi code has been removed. If you
+prefer to use a supported version with a stable API, then use the JGraphpad Pro distribution
+instead.
+
+- Compiles with JGraph 5.8.0
+- Use a plugin architecture. Plugins aren't mandatory to compile nor run.
+- To demonstrate how it scales, we give two biaries in this distribution: one will all plugins
+but no (PDF, PDF and SVG) third party libraries that weight 740 ko and an other one without any plugin that weight 430 ko.
+- The coreframework is supposed to be quite cleanely coded why plugins are more experimental
+and less supported.
+- Now the shape toolbar is a document instance so that it becomes possible to make a plugin that will use several different kind of documents.
+- Warning: the open/save has been changed to use XMLEncoder/Decoder. Saving works except for images. Use Import/Export JGX to use the old file format.
+- Plugins now can register their own action menus and action implementations. A default plugin
+properties files list is registered in Graphpad.properties. You can push your own bundle to
+override it before instantiating a GPGraphpad.
+- Drag and drop to the desktop now use the new XML format.
+- Load actions in a loose coupling way. The bad point is that compile time instantiation
+  errors turn runtime exceptions (however not freezing) if your XML configuration file is incorrect,
+  the good point is that this allows better scalability: just load the actions you want!
+  If actions can't be loaded because you don't want to distribute a library along
+  (it can be to cut the downloading time or to allow linking with incompatible licenses
+  but not distributing along to preserve the GPL, Batik for instance...)
+- View Fit now scrolls the view properly after zooming (a better centering can be achieved).
+- Cell user objects are handled via the ICellBuisnessObject interface for better integration
+  with specific business logic.
+- Although JGraphpad remains GPL as a whole, those changes are released under the LGPL license
+- GPSessionParameter allows to deal with command line parameter with the same interface when
+deploying as application, applet or via webstart.
+- Use the decorator design pattern to dynamically change the document layout and add or remove
+responsibilities according to loaded plugins.
+- Sugi layout checks for DAGs and corrected hierarchy bug
+
+NEW LIMITATIONS:
+- No more use of the user properties because this was breaking the security sandbox
+
+
+JGraphpad 5.7.4.4
+-----------------
+
+- Compiles with JGraph 5.7.4.4
+- Licensing additional to allow use with Netbeans RCP
+
+JGraphpad 5.7.4.2
+-----------------
+- Binary built for 1.4 JVM
+
+JGraphpad 5.7.3.1.1
+-------------------
+- Compiles with JGraph 5.7.3.1
+- Fix to bug 1333268: default file saving fails to encode edge control points
+- Fix to bug 1333264:  wrong cell bbox when in-palce editing with zoom
+- Buttons to create edge or vertex aren't remanent anymore. The former behaviour can be restored by setting GPMarqueeHandler.remanent to true
+- GPMarqueeHandler, GPGraph, DefaultGraphModelFileFormatXML and GPUserObject have been moved to org.jgraph and got their constructors turned protected
+  This way they can be subclassed (in a custom app using JGraphpad.jar as a library) and the custom subclasser will always be used
+  along the whole JGraphpad code! No more need to rewritte everything...
+- Various warning removed, code clean up
+
+JGraphpad 5.7.2
+---------------
+- Compiles with JGraph 5.7.2
+- Resolves .gif source code licensing issue
+
+JGraphpad 5.7
+---------------
+- Compiles with JGraph 5.7
+
+JGraphpad 5.6.2.1
+-----------------
+- Compiles with JGraph 5.6.2.1
+- Various changes by Rapha�l Valyi to simpilfy sublcassing JGraphpad classes
+- Fix to undo history
+
+JGraphpad 5.5.1.1
+-----------------
+- Compiles with JGraph 5.5.1
+- Incorporates rest of JGraph addons source code
+- Various changes by Rapha�l Valyi to simpilfy sublcassing JGraphpad classes
+
+JGraphpad 5.4.4.0
+-----------------
+- Compiles with JGraph 5.4.4
+- Fixes exception in Shape->Clone->Size
+- Adds Swimlane cell
+- Persists all GraphConstants attributes correctly
+- Overview panel refreshs correctly after scale change
+- Moved JGraphUtilities to org.jgraph.util from addons
+
+JGraphpad 5.4.2.0
+-----------------
+- Compiles with JGraph 5.4.2
+- Clones GPUserObject correctly on popup menu option
+- Fixes problem with getPreferredSize() in Rule
+
+JGraphpad 5.4.0.0
+-----------------
+- Compiles with JGraph 5.4
+- Fixes open library bug
+- Fixed in-place editing in GPAttributeMap
+- Fixes zoom tool offset if zoom is not 1
+- Changed to use GXL import from addons
+- SVG functionality removed due to license clash
+- Incorporated fixes for spline edges
+- Removes explicit cell selection from GPMarqueeHandler
+
+JGraphpad 5.2.0.0
+-----------------
+
+- Workaround for missing font in GraphConstants.DEFAULTFONT
+- Replaced Window->Windows menu option with memory leak fix
+- Migrated to new JGraph 5.2 API
+
+JGraphpad 5.1.0.0
+-----------------
+
+- Added parameter for automatic image map export
+- Added protocol parameter to webstart version
+- Using layout cache for inserts in marquee handler
+- Made ShadowBorder serializable
+- Fixed flickering in edge connection mode
+- Moved jump to port behaviour to core
+- Search for floating port in getPortViewAt
+- Included groups, ports in image map exports
+- File read return GPUserObject by default
+- Set opaque for visible borders
+- Fixed gradient color combo
+- Printing stack trace on file open errors
+- Select mouse tool as default in toolbox
+- Moved jump-to-port to GPGraph and made recursive
+- Using empty label as default in GPUserObject
+- Using GPUserObjects in all cells
+
+JGraphpad 5.0.3.0
+-----------------
+
+- Changed drag enabled default to false
+- Fixed recursive setting of attributes
+- Added shadow border to styles & file format
+- Make url property visible in GPUserObject
+- Fixed image map export
+- Fixed URLs from IE for image map export
+- Fixed file format for double coordinates
+- Added Website integration with Webstart
+- Added gradient color to file format
+- Using jgraph addons in align actions
+- Using GTK look and feel if possible
+- Fixed corrupted Gif images in distributions
+- Fixed DnD: Accepts files, urls, images & text
+- Added SVG Export (using Batik)
+- Added PDF Export (using iText)
+- Using utilities for shape alignment
+- Fixed inverse selection, improved inversion for groups
+- Fixed class cast exception in align top, left, bottom
+- Added GEOCodec for geographic data import to file, import
+- Fixed initial diamond toolbox button state
+- Enabled deselection in all mouse tools
+- Using custom attribute map for user object cloning
+- Fixed lost user object on in-place edit
+- Added parallel routing to format menu
+- Fixed possible class cast exception in tilt graph
+- Relaxed auto parallel edge routing condition
+- Using addons for simple format import
+- Added gradient style combo
+- Sticky toolbox is default
+- Added gradient fill color menu item
+- Automatic routing for self-refences and parallel edges
+- Fixed Edge connection point in marquee handler
+- Removed calls to createAttributes
+
+JGraphpad 5.0.0.1
+-----------------
+
+- Fix error that caused GPUserObject to be replaced with string in cell atrributes in apply()
+- Corrected export/import of rounded rectangle and diamond cells
+- Corrected corrupted gifs in 5.0.0.0 source distribution
+
+JGraphpad 5.0
+-------------
+
+- New splash window
+- Displays progress dialog in layout
+- Uses Ant versioning
+- Uses image creation from addons
+- Adds EPS export
+- Adds diamond, rounded rectangle
+- Uses CellViews from JGraphAddons
+- Adds various layouts
+- Uses layouts from JGraphAddons
+- Updated to use JGraph 5.0 which fixes zoom while selected bug
+- Fixed library menu bugs. sf.net bug #598961
+- Removed files - GraphModelProviderRegistry,GraphModelProvider,GraphModelFileFormat,
+    DefaultGraphModelProvider,DefaultGraphModelFileFormatSerial
+- Removed various unused code
+- Added Portuguese translation
+
+JGraphpad 4.0
+-------------
+
+- Updated to use JGraph 4.0
+- Fixed library open bug. sf.net bug #974598
+- Fixed problem with edge points not being persisted. sf.net bug #982278
+- Added option to place labels along edges
+
+JGraphpad 3.4.1
+---------------
+- Thanks to David Benson!
+- Fixed leaks
+- Uses JGraph 3.4.1
+
+JGraphpad 3.0
+-------------
+- Moved to org.jgraph package name
+- Cleaned-up directory structure
+- Ant build environment
+
+JGraphpad 2.2.3.1 release
+-------------------------
+- Feature Request ID 730554 added option for error log window to become visible on error
+- Added option on right click to email errors to tech support
+- Added wait cursor on file loading and saving to tiki 
+
+JGraphpad 2.2.2.1 release
+-------------------------
+- Concurrent diagram editing (see File > Live Connect)
+- Prints multiple pages if diagram too large
+- Bug ID 782837 removed (FileNotFoundException if there is any problem while saving)
+- Feature Request ID 782847 added (Store and load the last path position from FileOpen / FileClose)
+- Feature Request ID 782853 added (Store and load the last window position)
+- Feature Request ID 785936 added (Templates for the gui, windows with esc button support)
+- Do not use filename for images after Drag and Drop
+- GEM and Annealing Layout algorithms released
+
+JGraphpad 2.2.1.3 release
+-------------------------
+- Accept *.png files via drag and drop as images
+- Added tooltip capability to comboboxes
+- Added capability for menu key shortcuts (ie ALT-F for File menu)
+- Cleaned up overview panel display
+
+JGraphpad 2.2.1.2 release
+-------------------------
+- Use JGraph 2.2.1
+- Fixed Tooltips
+
+JGraphpad 2.2.1.1 release (2.2.1.1)
+-----------------------------------
+- All user-defined keys and properties are UTF-8 encoded
+
+JGraphpad 2.2.1 release (2.2.1.0)
+---------------------------------
+- Supports Mozilla if installed (RedHat Linux etc)
+- Added automatic conversion when opening old files
+- Fixed vertical line perimeter point for ellipses
+- Added Graph state to file format
+- Added Import > Old File Format
+- Added new file format
+
+JGraphpad 2.1.1-rc3 release (2.1.1.3)
+-------------------------------------
+- Disable doubleBuffering on Mac OS X (added switch to properties file)
+- Open from URL supports several File Formats
+- FileFormat changed to URL usage
+- Added compressLibrary switch to property file
+- Changed library format to (un)compressed XML
+- Fixed hidden directories in file filters
+- Fixed inverted order on group
+- Prepared isAntiAliased for inclusion into next (final) file format version
+- GXL-import supports new attributes:  - font, attrs: name, size, style(plain, bold, italic), color, background-color, autosize (from jgraph-research/opheamro, many thanks!)
+- Added more Graph properties to PAD-files (old format still supported)
+- Fixed Format Combobox Heights and using values from property files
+- Added CustomUserObject with Properties Dialog (Use Right Click -> Properties, property "url" for HTML Image Map Export)
+- Accepts Files (URLs), Images, and Text from OS/Browser through Drag and Drop and Copy Paste
+- Selected cells drop/paste as text/GXL into Text Editing applications such as Word, Notepad etc.
+- Fixed StatusBar
+- Fixed "black border" bug in image export and ignore grid and selection
+- Added OverviewPane to main window
+- Changed SaveTiki to SaveTikiAndExit
+- Added world-icon to SaveToTiki and OpenFromURL
+- Minor bug fixes - added GPGraphpad.exit global exit point
+- Panner can be resized from southeast corner - original graph changes zoom
+- Bugfix for the applet error "No Graphmodel provider available."
+- Added File > Export > Save to Tiki... (Experimental)
+- Added File > Open from URL (uses compressed files by default, needs some changes in the FileFormatRegistry)
+- Added File > Export as GIF
+- More detailed language externalization.  Contribution from Shinji Nakamatsu (snaka@users.sourceforge.net)...great job, a big thanks!!!
+- Added panner (red box) to overview panel
+- Set minimum initial explorer size to (320, 200)
+- added UML.lib, a simple library of UML components (note: library does not yet save in xml)
+- added default_library.lib data and new data directory (http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/jgraph/jgraphpad/data/)
+- GPMarqueeHandler: Added panning (use right mouse button and drag)
+- Fixed stack overflow and cell order in explorer
+- new Explorer in Tool -> Show Explorer
+
+JGraphpad 2.1.1-rc2 release (2.1.1.2)
+-------------------------------------
+- new Menu action Format -> Shape -> Image from URL
+- changed version naming approach to JGmajorversion.JGminorversion.JGPversion.releasecandidate
+- Indonesian translation contributed by Muhammad Panji (sumodirjo@users.sourceforge.net)...thanks!!!
+- Japanese translation contributed by Shinji Nakamatsu (snaka@users.sourceforge.net)...thanks!!!
+- Spanish translation contributed by Leandro Chango (elchango@users.sourceforge.net)...thanks!!
+- Thai language localization now included, thanks to Teerapong Moonkhum (teerapong@users.sourceforge.net) for the contribution!!!
+- Code cleanup as identified by PMD code analyzer.
+- Added automated source code checking in build script using PMD (http://pmd.sf.net), target name = checksrc
+- Added File > Library > Open from URL action (and sample file at http://www.javalab.org/rep/test.lib)
+- Added getLabel hook to create alt tag for respective cell in image map (see http://sourceforge.net/forum/forum.php?thread_id=821396&forum_id=140881)
+- Uses new GraphConstants.setFont method
+- Fixed "Null" in Save dialogs
+- New Menu entries for Help->Homepage and Help->Submit a Bug
+
+
+JGraphpad 2.0.1-rc1 release
+-----------------------
+- Changed default Font to Arial, 10
+- Speed up for the all LayoutAlgorithm while drawing.
+- Fix for the Sugiyama Layoutalgorithm.
+- File->Open now looks for already open instance of drawing and option to revert to previously saved version
+- Multiple file format support
+- Added another method to define custom Actions and their Menubar assignments for more flexible customization
+- Corrected wrong return value in ToolsTooltips.isSelected
+- Added FileImportSimple (Cell1:Cell2\nCell2:Cell3...)
+- Added FileImportGXL
+- Added File > Import menu and icon
+- Added FileExportImageMap (currently using labels as URLs)
+- Added FileExportPNG
+- Use ImageIO in FileExportJPG
+- 1:1 icon added for Actual Size command
+- Files contain images as URLs
+- Added multilined text tool
+�
+�
+JGraphpad 2.0.0 release
+-----------------------
+- XML File Format enabled
+- Splash Window with dynamic Text drawing
+- ToolBars dockable
+- Multi Document Interface
+- Actions moved to an separate package
+- JGraphpad fitted up to Java 1.4
+- deprecated methods removed
+- Log Console
+�
+�
+JGraphpad-1.3.1 release
+-----------------------
+- new version control and an ant build file
+- new build process
+- bugfix for the image loader
+- api doc
+
+JGraphpad-1.3 Salamanca
+-----------------------
+- resources was moved to com.jgraph.pad.resources
+- Translator with a plugable design was added
+- ImageLoader with a plugable design was added
+- bug java.io.NotSerializableException:
+  com.jgraph.layout.SugiyamaLayoutAlgorithm$CellWrapper
+  removed
+
+
+JGraphpad-1.2.2-Salamanca
+-------------------------
+
+- added to property file:
+  * LoadLibraries: Load multiple libraries on startup (XOR with LibraryName)
+  * Graph/LibraryExtension: For open and save dialogs and file filtering
+  * FullLibraryAccess: Disable/Enable Save, Rename & Add, Delete Entry
+  * TextBorder: If a text cell should have a border or not
+  * FontName/Size/Style: Default Font Settings
+  * FrameMaximize: Maximize the window on startup
+    (Maximizing is only available in Java 1.4, we use screen size instead)
+  * ShowRuler: Disable/Enable ruler on startup
+- removed the "cannot import" debugging output
+- plugin mechanism: See property file and com.jgraph.pad.GPPlugin for details
+- scaled image cells (no aspect ratio and alignment)
+- added format > routing > simple | none
+- new plugable layout algorithm architecture
+- sugiyama layout algorithm
+- spring embedded layout algorithm
+
+JGraphpad-1.2.1-Salamanca
+-------------------------
+
+- Touch Layout takes into account cell size
+- Exports to GraphViz format
+- Uses JGraph 2.0.x
+
+JGraphpad-1.2-Salamanca
+-----------------------
+
+- Image-cell with scaling
+- No Fit Menuitem
+- Page Fit/Page Width only in Layout Mode
+- Textedit always accepted
+- Overview.resize -> rescale
+- Open Library -> one touch expand
+- No Border for Text tool
+- Create Edge w/ "Jump" mode
+- Show Library Menu removed
+- Using Splitpane OneTouchExpandable
+- Library background changed to white
+- Changed License
+- Change Copyright Disclaimer
+- Change Splash Screen
+- Delete Library entries (Delete key)
+- Undo/Redo-Menu Label corrected
+- Added Hook GPGraphpad.createGraphUndoManager
+- Merged Common Properties
+- Added NoStart/NoEnd menu item
+- Minor bug fixes
+- Added libraryExpanded Property
+- Added Hook GPGraphpad.createGraphUndoManager
+- Class GPGraphpad, GPLibraryPanel made final
+- Added GPGraphpad.setModified(boolean)

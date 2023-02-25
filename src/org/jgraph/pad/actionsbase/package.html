@@ -1,0 +1,24 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<body>
+<p>
+Minimal package of actions for a decent JGraphpad use. a GUI action is a 'Command Pattern' launching some code when a button is pressed.</p>
+
+<p>
+The layout and description of the GUI buttons launching those actions is defined in the Graphpad.properties file.
+</p>
+
+<p>
+You can easily override any of those action by registering an alternative custom class for it in the properties file.
+</p>
+
+<p>
+In order to speed up the startup, we avoid loading those actions eagerly. We rather dynamically instanciate them when they are triggered.
+A fiew of those action files also describe their GUI. In that case, they should be eagerly loaded. That's why there are two packages: 'eager' and 'lazy'.
+</p>
+
+<p>
+Beware of using threads or even the SwingWorker if you want to launch a GUI non blocking resource intensive action through that pattern.
+</p>
+</body>
+</html>

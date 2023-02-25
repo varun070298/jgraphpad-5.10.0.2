@@ -1,0 +1,155 @@
+JGraphpad - Diagram Editor and Source code examples (c) 2001-2006 JGraph.com
+
+A collection of source code examples forming a diagram editor based on JGraph
+
+Gaudenz Alder; then heavily refactored by Raphael Valyi
+
+1. Disclaimer
+-------------
+
+JGraphpad is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+2. Installation
+---------------
+
+2.1 Requirements
+----------------
+JGraphpad is available in different flavors that require the following 
+downloads:
+o Web Start: JavaTM Web Start (http://java.sun.com/products/javawebstart/) or 
+o Application: SDK or JRE 1.4, 1.5 or 1.6 (http://java.sun.com/j2se/) or 
+o Applet: JavaTM Plug-In (http://java.sun.com/getjava/)
+We recommend Web Start. The most recent version of Java can be obtained 
+from http://java.sun.com/j2se/
+To build JGraphpad a copy of Ant is required. Ant is available at
+http://ant.apache.org/
+
+On the server side, almost anything would fit. But to be able to upload files to the server, you should have 
+an HTTP upload service working already (using the POST method).
+Warning, HTTPS is not supported out of the box and would require you update the JGraphpad code...
+
+2.2 Compiling from SVN
+----------------------
+
+The SVN repository parameters are detailes at http://sourceforge.net/svn/?group_id=43118
+see build instructions at http://wiki.visualmodeller.org/JGraphpadCE_BuildProcess
+
+
+2.3 Libraries used
+------------------
+Visit http://wiki.visualmodeller.org/JGraphpadCE_BuildProcess
+
+
+2.4 Installing JGraphpad
+------------------------
+Visit http://wiki.visualmodeller.org/JGraphpadCE_BuildProcess
+
+
+3. What is it?
+--------------
+JGraphpad is a graphical user interface to edit JGraph diagrams and provide
+a set of examples dealing with the JGraph component. It is currently 
+available in a variety of languages (see translations package).
+JGraphpad is provided as an example 
+for the JGraph Swing component (http://www.jgraph.com).
+
+3.1 Purpose
+-----------
+With JGraphpad, you can create flow charts, maps, UML diagrams, and many 
+other diagrams. 
+
+3.2 Features
+------------
+o Export to XML and JPG
+o Built-in Object Library
+o Overview
+o Interactive Layout
+o Print Support
+o Page View
+o Automatic Zoom
+o Grid
+o Drag and Drop
+o Search
+o Minimum Spanning Tree
+o Shortest Path
+o Component Count
+o Background Image
+o Upload to server
+
+Plus all the features from JGraph such as Layers, Grouping, "Step-Into" 
+Groups, Command History, Clipboard with Multiple Transfer Formats, Grid, 
+Anti-Alias, In-Place Editing, Pluggable Look-and-Feel, Undo/Redo, 
+and more.
+
+4. Misc
+-------
+
+4.1 Tips and Tricks
+-------------------
+To create multiline labels you can use HTML. Here is an example:
+<html>first line<br>second line</html>
+The following key bindings are supported by default: 
+o Alt-Drag: Force marquee selection
+o Shift-Select: Extend selection
+o Control-Select: Toggle selection
+o Control-Drag: Clones selection
+o Shift-Drag: Constrained drag
+To add and remove bends (edge points) you can press the right mouse button 
+while holding down the Shift key. To use the quadratic and bezier line style 
+the edge must have 1 and 2 intermediate points respectively.
+
+Also see: http://wiki.visualmodeller.org/JGraphpadCE_FAQ
+
+
+For more information please visit
+http://www.jgraph.com
+
+4.2 JGraph Layout Pro
+---------------------
+If you require commercial grade layouts for JGraph along with full support
+please see the JGraph Layout Pro product at
+http://www.jgraph.com/layout.html
+
+4.3 JGraphpad Pro
+-----------------
+If you require a commercial grade version of JGraphpad a completely re-written
+toolkit called JGraphpad Pro is available for this purpose. If comes with full 
+documentation and commercial support. See
+http://www.jgraph.com/jgraphpad.html
+
+4.4 License
+-------
+For legal and licensing issues, please read the LICENSE file. For those too
+lazy to read the file, JGraphpad Community Edition is licensed under the GPL
+license. The only exception to this is if JGraphpad Community Edition or a
+legal derivate work of JGraphpad Community Edition is used within the
+Netbeans RCP. In such a case this software may be licensed under the terms of
+the LGPL, if all other source code this software is linked to is also licensed
+under the LGPL. Any such use of this software must clearly indicate that is
+being used under this exception and impose the same terms of further users
+of the source code.
+
+
+4.5 Support
+-------
+A community forum for JGraphpad is available at http://www.jgraph.com/forum
+There is no additional documentation available for JGraphpad Community 
+Edition.
+
+
+5 Extending JGraphpad Community Edition
+-------
+Since version 5.8, JGraphpad CE has got a plugin architecture. 
+You can writte you own plugin and also define which others plugins your app will use. 
+Basically, you can use any JGraph subclasser while still benefiting from the framework abilities. 
+All actions are overridable via the properties file bundle system. 
+But bare in mind that your app should stay licensed under GPL to do so. 
+If that's to restrictive to you because you plan to make business, please consider purchasing JGraphpad Pro 
+which has a business friendly license and a cleaner and more stable architecture.
+
+To see how you can extend JGraphpad CE, have a look at the Emergy Simulator project here:
+http://wiki.visualmodeller.org/EmSim
+Warning: at the time you look at this project, it may still be built on an older JGraphpad version; but
+that new JGraphpad version has been especially redesigned to cope better with those kind of applications.

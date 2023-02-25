@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="lib/ant/Pack200Task.jar"/>
+	<classpathentry kind="lib" path="lib/java/jgraph.jar"/>
+	<classpathentry kind="lib" path="lib/java/jnlp.jar"/>
+	<classpathentry kind="lib" path="lib/lib/ant/Pack200Task.jar"/>
+	<classpathentry kind="lib" path="lib/lib/java/jgraph.jar"/>
+	<classpathentry kind="lib" path="lib/lib/java/jnlp.jar"/>
+	<classpathentry kind="lib" path="unpacked/codecs.jar"/>
+	<classpathentry kind="lib" path="unpacked/console.jar"/>
+	<classpathentry kind="lib" path="unpacked/gpgraph.jar"/>
+	<classpathentry kind="lib" path="unpacked/jgraphpad_lazy.jar"/>
+	<classpathentry kind="lib" path="unpacked/jgraphpad.jar"/>
+	<classpathentry kind="lib" path="unpacked/layouts.jar"/>
+	<classpathentry kind="lib" path="unpacked/library.jar"/>
+	<classpathentry kind="lib" path="unpacked/translations.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

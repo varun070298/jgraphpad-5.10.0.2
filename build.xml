@@ -1,0 +1,365 @@
+<project name="The JGraphpad Community Edition Diagram Platform" default="dist" basedir=".">
+
+	<!-- ===================== Plugins to be compiled =========================== -->
+	
+
+	<!-- Comment plugins or doc if you don't want them to be compiled -->
+	<property name="plugin.library" value="" />
+	<property name="plugin.translations" value="" />
+	<property name="plugin.layouts" value="" />
+	<property name="plugin.console" value="" />
+	<property name="plugin.gpgraph" value="" />
+	<property name="plugin.codecs" value="" />
+	<property name="doc" value=""/>
+
+
+	<!-- ===================== Property Definitions =========================== -->
+	<property file="${basedir}/user.properties" />
+	<property name="app.name" value="JGraphpad" />
+	<property name="app.version" value="5.10.0.2" />
+	<property name="build.home" value="${basedir}/build" />
+	<property name="dist.home" value="${basedir}/dist" />
+	<property name="main.class" value="org.jgraph.pad.jgraphpad.JGraphpad" />
+	<property name="jarpack-task.jar" value="${basedir}/lib/ant/Pack200Task.jar"/>
+
+
+	<!--  ==================== Compilation Control Options ==================== -->
+	<property name="compileDefaultPlugins" value="false" /><!-- determine if default plugins will be included or not -->
+	<property name="jreTarget" value="1.4" /><!-- 1.4 is the lowest -->
+	<property name="jreSource" value="1.4" /><!-- 1.4 is the lowest -->
+	<property name="compile.debug" value="false" />
+	<property name="compile.deprecation" value="false" />
+	<property name="compile.optimize" value="true" />
+	
+	
+
+	<target name="prepare">
+		<tstamp />
+
+		<mkdir dir="${build.home}" />
+		<mkdir dir="${build.home}/doc" />
+		<mkdir dir="${build.home}/src" />
+
+		<copy todir="${basedir}/bin">
+			<fileset dir="src" includes="**/*.properties" />
+		</copy>
+
+		<copy todir="${basedir}/bin">
+			<fileset dir="src" includes="**/*.gif" />
+		</copy>
+
+		<copy todir="${build.home}/src">
+			<fileset dir="src" includes="**/*.java" />
+			<!-- No-Dist -->
+			<filterset begintoken="@" endtoken="@">
+				<filter token="NAME" value="${app.name}" />
+				<filter token="VERSION" value="${app.version}" />
+			</filterset>
+		</copy>
+		<copy todir="${build.home}/src">
+			<fileset dir="src" excludes="**/*.java" />
+		</copy>
+		<delete>
+			<fileset dir="${build.home}/src" includes="**/CVS" />
+		</delete>
+		
+		<mkdir dir="${dist.home}" />
+	</target>
+
+
+
+	<target name="platform" depends="prepare">
+		<!-- Compiles Microplatform -->
+		<echo message="compiling the microplatform (should only depend on jnlp.jar)..." />
+		<javac srcdir="${build.home}/src/org/microplatform" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}" destdir="${basedir}/bin" target="${jreTarget}" source="${jreSource}">
+			<classpath>
+				<pathelement location="${basedir}/lib/java/jnlp.jar" />
+			</classpath>
+		</javac>
+		<echo message="microplatform compiled!" />
+		<!--NB: we do not package a microplatform.jar here but actually we could, do it if you want to pick up that lib only-->
+	</target>
+
+
+
+	<target name="pad" depends="platform">
+		<!-- Compiles JGraphpad (without the default plugins) -->
+		<echo message="compiling jgraphpad (should only depend on microplatform.jar and jgraph.jar)..." />
+		<javac srcdir="${build.home}/src/org/jgraph/pad" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}" destdir="${basedir}/bin" target="${jreTarget}" source="${jreSource}">
+			<classpath>
+				<pathelement location="${basedir}/bin" />
+				<pathelement location="${basedir}/lib/java/jgraph.jar" />
+			</classpath>
+		</javac>
+		<echo message="jgraphpad compiled!" />
+		
+		
+		<!-- jgraphpad lazy loaded classes package (speed up the download experience)-->
+		<mkdir dir="${build.home}/lib" />
+		<move todir="${build.home}/jgraphpad_lazy/classes/org/jgraph/pad/actionsbase/lazy">
+			<fileset dir="${basedir}/bin/org/jgraph/pad/actionsbase/lazy"/>
+		</move>
+		<jar jarfile="${build.home}/lib/jgraphpad_lazy.jar" basedir="${build.home}/jgraphpad_lazy/classes" />
+		<echo message="jgraphpad lazy loaded classes package done!" />
+
+
+		<!--Make the jgraphpad.jar-->
+		<copy file="${basedir}/lib/java/jgraph.jar" tofile="${build.home}/lib/jgraphpad.jar" />
+		<jar jarfile="${build.home}/lib/jgraphpad.jar" basedir="${basedir}/bin/" update="true">
+			<exclude name="**/plugins/**" />
+			<metainf dir="${basedir}/lib/metainf"/><!-- Not crucial but speed up the applet startup dramatically -->
+			<manifest>
+				<attribute name="Main-Class" value="${main.class}" />
+			</manifest>
+		</jar>
+		
+		<move todir="${basedir}/bin/org/jgraph/pad/actionsbase/lazy">
+			<fileset dir="${build.home}/jgraphpad_lazy/classes/org/jgraph/pad/actionsbase/lazy"/>
+		</move>
+
+		
+	</target>
+
+
+
+	<target name="layouts" depends="pad" if="plugin.layouts">
+		<!-- Compile the layouts plugin -->
+		<javac srcdir="${build.home}/src/org/jgraph/plugins/layouts" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}" destdir="${basedir}/bin" target="${jreTarget}" source="${jreSource}">
+			<classpath>
+				<pathelement location="${basedir}/bin" />
+				<pathelement location="${basedir}/lib/java/jgraph.jar" />
+			</classpath>
+		</javac>
+		<copy todir="${build.home}/layouts_plugin/classes/org/jgraph/plugins/layouts">
+			<fileset dir="${basedir}/bin/org/jgraph/plugins/layouts"/>
+		</copy>
+		<jar jarfile="${build.home}/lib/layouts.jar" basedir="${build.home}/layouts_plugin/classes" />
+		<echo message="layouts plugin compiled!" />
+	</target>
+
+
+
+	<target name="codecs" depends="pad, layouts" if="plugin.codecs">
+		<!-- Compile the codecs plugin -->
+		<javac srcdir="${build.home}/src/org/jgraph/plugins/codecs" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}" destdir="${basedir}/bin" target="${jreTarget}" source="${jreSource}">
+			<classpath>
+				<pathelement location="${basedir}/bin" />
+				<pathelement location="${basedir}/lib/java/jgraph.jar" />
+			</classpath>
+		</javac>
+		<copy todir="${build.home}/codecs_plugin/classes/org/jgraph/plugins/codecs">
+			<fileset dir="${basedir}/bin/org/jgraph/plugins/codecs"/>
+		</copy>
+		<jar jarfile="${build.home}/lib/codecs.jar" basedir="${build.home}/codecs_plugin/classes" />
+		<echo message="codecs plugin compiled!" />
+	</target>
+
+
+
+	<target name="console" depends="pad" if="plugin.console">
+		<!-- Compile the console plugin -->
+		<javac srcdir="${build.home}/src/org/jgraph/plugins/console" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}" destdir="${basedir}/bin" target="${jreTarget}" source="${jreSource}">
+			<classpath>
+				<pathelement location="${basedir}/bin" />
+			</classpath>
+		</javac>
+		<copy todir="${build.home}/console_plugin/classes/org/jgraph/plugins/console">
+			<fileset dir="${basedir}/bin/org/jgraph/plugins/console"/>
+		</copy>
+		<jar jarfile="${build.home}/lib/console.jar" basedir="${build.home}/console_plugin/classes" />
+		<echo message="console plugin compiled!" />
+	</target>
+
+
+
+	<target name="gpgraph" depends="pad" if="plugin.gpgraph">
+		<!-- Compile the gpgraph plugin -->
+		<javac srcdir="${build.home}/src/org/jgraph/plugins/gpgraph" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}" destdir="${basedir}/bin" target="${jreTarget}" source="${jreSource}">
+			<classpath>
+				<pathelement location="${basedir}/bin" />
+				<pathelement location="${basedir}/lib/java/jgraph.jar" />
+			</classpath>
+		</javac>
+		<copy todir="${build.home}/gpgraph_plugin/classes/org/jgraph/plugins/gpgraph">
+			<fileset dir="${basedir}/bin/org/jgraph/plugins/gpgraph"/>
+		</copy>
+		<jar jarfile="${build.home}/lib/gpgraph.jar" basedir="${build.home}/gpgraph_plugin/classes" />
+		<echo message="gpgraph plugin compiled!" />
+	</target>
+
+
+
+	<target name="library" depends="pad" if="plugin.library">
+		<!-- Compile the library plugin -->
+		<javac srcdir="${build.home}/src/org/jgraph/plugins/library" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}" destdir="${basedir}/bin" target="${jreTarget}" source="${jreSource}">
+			<classpath>
+				<pathelement location="${basedir}/bin" />
+				<pathelement location="${basedir}/lib/java/jgraph.jar" />
+			</classpath>
+		</javac>
+		<copy todir="${build.home}/library_plugin/classes/org/jgraph/plugins/library">
+			<fileset dir="${basedir}/bin/org/jgraph/plugins/library"/>
+		</copy>
+		<jar jarfile="${build.home}/lib/library.jar" basedir="${build.home}/library_plugin/classes" />
+		<echo message="library plugin compiled!" />
+	</target>
+
+
+
+	<target name="translations" depends="pad" if="plugin.translations">
+		<!-- translation plugin -->
+		<copy todir="${build.home}/translations_plugin/classes/org/jgraph/plugins/translations">
+			<fileset dir="${basedir}/bin/org/jgraph/plugins/translations"/>
+		</copy>
+		<jar jarfile="${build.home}/lib/translations.jar" basedir="${build.home}/translations_plugin/classes" />
+		<echo message="translations package done!" />
+	</target>
+
+
+
+	<target name="compile_all" depends="pad, translations, library, gpgraph, console, layouts, codecs" >
+		<echo message="compiling plugins (enable/disable them by setting their properties in the ant build file)" />
+	</target>
+	
+
+
+	<target name="plugins_deprecated" depends="pad">
+		<!-- Compile the default plugins -->
+		<javac srcdir="${build.home}/src/org/jgraph/plugins" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}" destdir="${basedir}/bin" target="1.4" source="1.4">
+
+			<classpath>
+				<pathelement location="${basedir}/bin" />
+				<pathelement location="${basedir}/lib/java/jgraph.jar" />
+				<pathelement location="${basedir}/lib/epsgraphics.jar" />
+				<pathelement location="${basedir}/lib/itext-1.3.jar" />
+			</classpath>
+
+			<exclude name="**/SCCS/**" />
+			<exclude name="**/AnyFileYouDOntWantToCompile.java" />
+			<!-- Batik Apache license clashes with the GPL license so export as SVG can't be in the GPL distribution --> 
+			<exclude name="**/FileExportSVG.java" />
+		</javac>
+
+		<!--Make the jgraphpad.jar-->
+		<copy file="${basedir}/lib/java/jgraph.jar" tofile="${build.home}/lib/jgraphpad.jar" />
+		<!--uncomment the next line to get EPS export working-->
+
+		<!--unjar src="${basedir}/lib/epsgraphics.jar" dest="${build.home}/classes"-->
+
+		<!--uncomment the next line to get PDF export working-->
+		<!--unjar src="${basedir}/lib/itext-1.3.jar" dest="${build.home}/classes"/-->
+		<jar jarfile="${build.home}/lib/jgraphpad.jar" basedir="${build.home}/classes" update="true">
+			<include name="**" />
+			<manifest>
+				<attribute name="Main-Class" value="${main.class}" />
+				<attribute name="Class-Path" value="${jgraphpad.jar}" />
+			</manifest>
+		</jar>
+	</target>
+	
+	
+	
+	<target name="pack_all" depends="compile_all ,doc">
+		<!--Compress the jar using Pack200-->
+		 <echo message="Applying the pack200 utility on jars" />
+	    <taskdef name="pack200"
+	             classname="com.sun.tools.apache.ant.pack200.Pack200Task"
+	             classpath="${jarpack-task.jar}" />
+		
+		 <pack200 gzipoutput="true" src="${build.home}/lib/jgraphpad.jar" 
+			destfile="${build.home}/lib/jgraphpad.jar.pack.gz"/>
+		
+		 <pack200 gzipoutput="true" src="${build.home}/lib/jgraphpad_lazy.jar" 
+			destfile="${build.home}/lib/jgraphpad_lazy.jar.pack.gz"/>
+		
+		 <pack200 gzipoutput="true" src="${build.home}/lib/codecs.jar" 
+			destfile="${build.home}/lib/codecs.jar.pack.gz"/>
+		
+		 <pack200 gzipoutput="true" src="${build.home}/lib/console.jar" 
+			destfile="${build.home}/lib/console.jar.pack.gz"/>
+		
+		 <pack200 gzipoutput="true" src="${build.home}/lib/gpgraph.jar" 
+			destfile="${build.home}/lib/gpgraph.jar.pack.gz"/>
+		
+		 <pack200 gzipoutput="true" src="${build.home}/lib/layouts.jar" 
+			destfile="${build.home}/lib/layouts.jar.pack.gz"/>
+		
+		 <pack200 gzipoutput="true" src="${build.home}/lib/library.jar" 
+			destfile="${build.home}/lib/library.jar.pack.gz"/>
+		
+		 <pack200 gzipoutput="true" src="${build.home}/lib/translations.jar" 
+			destfile="${build.home}/lib/translations.jar.pack.gz"/>
+	</target>
+
+	
+	
+	<target name="dist" depends="pack_all">		
+		<!--Set up the local executables-->
+		<mkdir dir="${basedir}/unpacked" />
+		<copy todir="${basedir}/unpacked">
+			<fileset dir="${build.home}/lib" includes="**/*.jar"/>
+		</copy>
+
+		<!--Make the jgraphpad-binaries zip-->
+		<zip zipfile="${dist.home}/jgraphpad-${app.version}.zip">
+			<zipfileset dir="${build.home}/lib" includes="**/*.jar" prefix="jgraphpad-${app.version}/unpacked" />
+			<zipfileset dir="${build.home}/lib" includes="**/*.jar.pack.gz" prefix="jgraphpad-${app.version}/packed" />
+			<zipfileset dir="${basedir}" includes="ChangeLog" prefix="jgraphpad-${app.version}/" />
+			<zipfileset dir="${basedir}" includes="WHATSNEW" prefix="jgraphpad-${app.version}/" />
+			<zipfileset dir="${basedir}" includes="LICENSE" prefix="jgraphpad-${app.version}/" />
+			<zipfileset dir="${basedir}" includes="README" prefix="jgraphpad-${app.version}/" />
+			<zipfileset dir="${basedir}" includes="TODO" prefix="jgraphpad-${app.version}/" />
+			<zipfileset dir="${basedir}" includes="jgraphpad.sh" prefix="jgraphpad-${app.version}/" />
+			<zipfileset dir="${basedir}" includes="jgraphpad.bat" prefix="jgraphpad-${app.version}/" />
+			<zipfileset dir="${basedir}" includes="applet_demo.html" prefix="jgraphpad-${app.version}/" />
+			<zipfileset dir="${basedir}" includes="webstart_demo.jnlp" prefix="jgraphpad-${app.version}/" />
+			<zipfileset dir="${basedir}/lib/apache" prefix="jgraphpad-${app.version}/" />
+			<zipfileset dir="${basedir}/lib/javascript" prefix="jgraphpad-${app.version}/lib/javascript/" />
+			<zipfileset dir="${basedir}/lib/moinmoin" prefix="jgraphpad-${app.version}/lib/moinmoin_macros/" />
+		</zip>
+
+		<!-- Make source zip file -->
+		<zip zipfile="${dist.home}/jgraphpad-${app.version}-src.zip">
+			<zipfileset dir="${build.home}/lib" includes="**/*.jar" prefix="jgraphpad-${app.version}-src/unpacked" />
+			<zipfileset dir="${build.home}/lib" includes="**/*.jar.pack.gz" prefix="jgraphpad-${app.version}-src/packed" />
+			<zipfileset dir="${basedir}" includes="ChangeLog" prefix="jgraphpad-${app.version}-src/" />
+			<zipfileset dir="${basedir}" includes="WHATSNEW" prefix="jgraphpad-${app.version}-src/" />
+			<zipfileset dir="${basedir}" includes="LICENSE" prefix="jgraphpad-${app.version}-src/" />
+			<zipfileset dir="${basedir}" includes="README" prefix="jgraphpad-${app.version}-src/" />
+			<zipfileset dir="${basedir}" includes="TODO" prefix="jgraphpad-${app.version}-src/" />
+			<zipfileset dir="${basedir}" includes="jgraphpad.sh" prefix="jgraphpad-${app.version}-src/" />
+			<zipfileset dir="${basedir}" includes="jgraphpad.bat" prefix="jgraphpad-${app.version}-src/" />
+			<zipfileset dir="${basedir}" includes="build.xml" prefix="jgraphpad-${app.version}-src" />
+			<zipfileset dir="${basedir}" includes="applet_demo.html" prefix="jgraphpad-${app.version}-src/" />
+			<zipfileset dir="${basedir}" includes="webstart_demo.jnlp" prefix="jgraphpad-${app.version}-src/" />
+			<zipfileset dir="${build.home}/src" prefix="jgraphpad-${app.version}-src/src" />
+			<zipfileset dir="${basedir}/lib" prefix="jgraphpad-${app.version}-src/lib/" />
+		</zip>
+	</target>
+
+	<target name="doc" depends="prepare" if="doc">
+		<javadoc packagenames="org.jgraph.*" sourcepath="src" classpath="${jgraphpad.classpath}" destdir="${basedir}/doc" use="true" author="false" version="false" windowtitle="JGraphpad v${app.version} API Specification" doctitle="JGraphpad Community Edition v${app.version} API Specification" />
+		<!--Make the javadoc zip-->
+		<zip zipfile="${dist.home}/jgraphpad-${app.version}-docs.zip">
+			<zipfileset dir="${basedir}/doc" prefix="jgraphpad-${app.version}-docs" />
+		</zip>
+	</target>
+
+	<target name="start" description="Run JGraphpad">
+		<java fork="true" classname="${main.class}">
+			<classpath>
+				<pathelement location="${basedir}/bin" />
+				<pathelement location="${basedir}/lib/java/jgraph.jar" />
+				<pathelement location="${basedir}/lib/epsgraphics.jar" />
+				<pathelement location="${basedir}/lib/itext-1.3.jar" />
+			</classpath>
+		</java>
+	</target>
+
+	<target name="clean" description="Delete old build and dist directories">
+		<delete dir="${build.home}/" />
+		<delete dir="${basedir}/bin/" />
+		<delete dir="${dist.home}/" />
+	</target>
+
+</project>

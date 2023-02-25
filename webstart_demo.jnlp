@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp
+  spec="1.0+"
+  codebase="http://wiki.visualmodeller.org/applets/JGraphpadCE"   href="http://wiki.visualmodeller.org/applets/JGraphpadCE/wspad_VisualModellerWiki_pad2.jnlp">
+  <information>
+    <title>JGraphpad Community Edition</title>
+    <vendor>the JGraph Team</vendor>
+    <description>JGraphpad Community Edition Diagram Editor</description>
+    <offline-allowed/>
+  </information>  
+  <resources>
+    <j2se version="1.4+"/>
+    <jar href="jgraphpad.jar"/>
+    <jar href="jgraphpad_lazy.jar"/>
+    <jar href="library.jar"/>
+    <jar href="translations.jar"/>
+    <jar href="gpgraph.jar"/>
+    <jar href="library.jar"/>
+    <jar href="console.jar"/>
+    <jar href="codecs.jar"/>
+  </resources>
+  <application-desc>
+  <argument>-h</argument>
+  <argument>wiki.visualmodeller.org</argument>
+  <argument>-p</argument>
+  <argument>80</argument>
+  <argument>-t</argument>
+  <argument>http</argument>
+  <argument>-d</argument>
+  <argument>/VisualModellerWiki?action=AttachFile&do=get&target=pad2.xml</argument>
+  <argument>-v</argument>
+  <argument>/VisualModellerWiki?action=AttachFile&do=get&target=pad2.png</argument>
+  <argument>-f</argument>
+  <argument>pad2</argument>
+  <argument>-u</argument>
+  <argument>/VisualModellerWiki?action=AttachFile</argument>
+  <argument>-n</argument>
+  <argument>no</argument>
+  </application-desc>
+</jnlp>

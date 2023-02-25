@@ -1,0 +1,6 @@
+URI: packed/jgraphpad_lazy.jar.pack.gz
+Content-Type: x-java-archive
+Content-Encoding: pack200-gzip
+
+URI: unpacked/jgraphpad_lazy.jar
+Content-Type: x-java-archive
